@@ -29,7 +29,10 @@ def sendSparkPOST(url, data):
     contents = urllib2.urlopen(request).read()
     
     return contents
-    
+def matching_interaction(interaction):
+    return interaction['interactionConcept'][1]['sourceConceptItem']['name'] + ' (RXCUI: ' + interaction['interactionConcept'][1]['minConceptItem']['rxcui'] + ') ' + 'has been determined to have the following effect:\n' +  interaction['description'] + '\nVisit this website for further information on ' + interaction['interactionConcept'][1]['sourceConceptItem']['name'] + '\n' + interaction['interactionConcept'][1]['sourceConceptItem']['url']
+
+
 def get_variation(json):  #Pulls Variations of a prescription from JSON output
     with open('.variations.txt') as f: 
         variations = f.readlines()
@@ -103,6 +106,13 @@ def index(request):
         for line in lines:
             got_count = line[0]
         f.close()
+    with open(".search_4_interactions.txt") as f:
+        lines = f.readlines()
+        for line in lines:
+            search_interaction_flag = line[0]
+        f.close()
+
+
     print "COUNT: " + str(got_count)
     webhook = json.loads(request.body)
     result = sendSparkGET('https://api.ciscospark.com/v1/messages/{0}'.format(webhook['data']['id']))
@@ -113,14 +123,12 @@ def index(request):
         in_message = result.get('text', '').lower()
         in_message = in_message.replace(bot_name, '')
         if 'check' and 'prescription' in in_message:
-            print "WOw"
             msg = "How many prescriptions are you taking?"
             with open(".num_prescription_flag.txt",'w') as fin:
                 fin.write("1")
                 fin.close()
-            print "HERE ISRESULTS"
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})
-        if int(num_prescription_flag) == 1 and int(got_count) == 0:
+        if (int(num_prescription_flag) == 1 and int(got_count) == 0) and ('exit' or 'reset' not in in_message):
             print "HERE"
             prescription_count = int(in_message)
             with open('.precription_count','w') as f:
@@ -131,7 +139,7 @@ def index(request):
                 f.close()
             msg = "What is the name of your first prescription?"
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})
-        if int(num_prescription_flag) == 1 and int(got_count) == 1 and int(variation_flag) == 0: 
+        if int(num_prescription_flag) == 1 and int(got_count) == 1 and int(variation_flag) == 0 and 'exit' and 'reset' not in in_message: 
             print "WOWOEY"
             name_of_drug = in_message.lower()
             url = 'https://clin-table-search.lhc.nlm.nih.gov/api/rxterms/v3/search?terms=' + name_of_drug + '&ef=STRENGTHS_AND_FORMS,RXCUIS'
@@ -155,7 +163,7 @@ def index(request):
                 f.write('1')
                 f.close()
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})
-        if int(variation_flag) == 1:
+        if int(variation_flag) == 1 and int(search_interaction_flag) == 0 and 'exit' and 'reset' not in in_message:
             rxcui = get_specific_variation(int(in_message))
             msg = "The RXCUI of your prescription is " + str(rxcui)
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})    
@@ -169,10 +177,36 @@ def index(request):
             requester = urllib2.Request(url)
             json_output = urllib2.urlopen(requester).read()
             json_output = json.loads(json_output)
-            x= 0 
+            with open('.latestinteraction','w') as outfile:
+                json.dump(json_output,outfile)
+                outfile.close()
+            x = 0 
             x = len(json_output['interactionTypeGroup'][0]['interactionType'][0]['interactionPair'])
-            msg = 'Total # of Interaction Pairs: ' + str(x) + '\n Example: ' + str(json_output['interactionTypeGroup'][0]['interactionType'][0]['interactionPair'][0])
+            msg = 'Total # of Interaction Pairs: ' + str(x)
+            with open(".search_4_interactions.txt",'w') as f:
+                f.write('1')
+                f.close()
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})
+            msg = 'To search the list of interactions, type in a drug to search for, otherwise simply respond with \'exit\' or \'reset\''
+            sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})
+        if(int(search_interaction_flag) == 1 and 'exit' or 'reset' not in in_message):
+            last_json = ""
+            with open('.latestinteraction') as infile:
+               last_json = json.load(infile)
+            for interaction in last_json['interactionTypeGroup'][0]['interactionType'][0]['interactionPair']:
+                if interaction['interactionConcept'][1]['sourceConceptItem']['name'].lower() in in_message:
+                    msg = matching_interaction(interaction) 
+                    break
+                else:
+                    msg = "No Matches Found."
+            sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})
+        if(in_message == 'exit'):
+            os.system('python reset_all_flags.py')
+            msg = "You're Session has been reset. Please ask to check your prescriptions"
+            sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})
+
+
+    
     return "true"
             
     

@@ -14,7 +14,10 @@ def form_list_of_variations(json):
     summation = []
     x = 0
     for item in variations:
-        summation.append(str(variations[x]) + ',' + str(RxCui[x][0]))
+        if(len(RxCui[x]) > 1):
+            summation.append(str(variations[x]) + ',' + str(RxCui[x]).strip('[u\']') + ',' + str(json[2]['STRENGTHS_AND_FORMS'][x]))
+        else:
+            summation.append(str(variations[x]) + ',' + str(RxCui[x]).strip('[u\']') + ',0')
         x += 1
 
     return summation
