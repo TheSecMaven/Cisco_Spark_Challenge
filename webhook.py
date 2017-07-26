@@ -153,7 +153,7 @@ def index(request):
         for line in lines:
             lastrxcui = line
             f.close()
-    with open('.precription_count') as f:
+    with open('.prescription_count.txt') as f:
         lines = f.readlines()
         for line in lines:
             prescription_count = line[0]      
