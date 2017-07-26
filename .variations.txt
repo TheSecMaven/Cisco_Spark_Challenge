@@ -1,4 +1,4 @@
-Naltrexone (Injectable),637213
-Naltrexone (Oral Pill),1483744
-BuPROPion/Naltrexone XR (Oral Pill),1551468
-morphine/Naltrexone XR (Oral Pill),863848
+Naltrexone (Injectable),637213,0
+Naltrexone (Oral Pill),1483744,0
+BuPROPion/Naltrexone XR (Oral Pill),1551468,0
+morphine/Naltrexone XR (Oral Pill),863848,863850,863852,863854,863856, 20-0.8 mg Abuse-Deterrent XR Cap, 30-1.2 mg Abuse-Deterrent XR Cap, 50-2 mg Abuse-Deterrent XR Cap, 60-2.4 mg Abuse-Deterrent XR Cap, 80-3.2 mg Abuse-Deterrent XR Cap

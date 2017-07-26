@@ -19,3 +19,6 @@ with open('.variation_flag.txt','w') as f:
 with open('.gotrxcui.txt','w') as f:
     f.write('0')
     f.close()
+with open('.strength_choose_flag','w') as f:
+    f.write('0')
+    f.close()
