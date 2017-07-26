@@ -1,0 +1,20 @@
+.got_count_flag.txt
+Used to determine when we have been given a number of prescriptions. This allows us to know to proceed to the next stages of a conversation
+.lastrxcuireported.txt
+This holds the last RXCUI number that was determined to be for a given user. This RXCUI must be stored to maintain conversation relevance when we decide to lookup an RXCUI
+.latestinteraction
+Stores the drug interaction data that was pulled last. Allows for storage and quicker querying when users query multiple times
+.num_prescription_flag.txt
+Further used to verify that we have been given a number of prescriptions that a given user is taking.
+.prescription_count.txt
+Holds the number that the user provided as # of prescriptions they are taking, will be used in the future to determine how many prescriptions we need to ask about and pull information for
+.search_4_interactions.txt
+Used to determine if the user should be allowed to search for drug interactions, if they are allowed to, then we need to check the input they send us 
+.strength_choose_flag
+This flag is used to determine if there is more than one dosage of a given drug that has been selected. If set to true, we have to ask the user about their dosage.
+.strength_variations.txt
+Used to store all dosage variations of the latest prescription selected. Stores dosage name and RXCUI for all possible variations.
+.variation_flag.txt
+Used to determine if we have multiple variations.
+.variations
+Holds all the variations of a given drug. When a specific variation of a prescription has multiple dosages, they are all input on the same line and then checked against to determine if and when we have multiple dosages that we need to clarify with the user.
