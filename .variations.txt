@@ -1,4 +1,4 @@
-1Naltrexone (Injectable)
-1Naltrexone (Oral Pill)
-1BuPROPion/Naltrexone XR (Oral Pill)
-1morphine/Naltrexone XR (Oral Pill)
+Naltrexone (Injectable),637213
+Naltrexone (Oral Pill),1483744
+BuPROPion/Naltrexone XR (Oral Pill),1551468
+morphine/Naltrexone XR (Oral Pill),863848

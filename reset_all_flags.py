@@ -13,3 +13,6 @@ with open('.prescription_count.txt','w') as f:
 with open('.variation_flag.txt','w') as f:
     f.write('0')
     f.close()
+with open('.gotrxcui.txt','w') as f:
+    f.write('0')
+    f.close()
