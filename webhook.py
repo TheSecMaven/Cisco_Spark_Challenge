@@ -12,13 +12,28 @@ def sendSparkGET(url):
         -retrieving message text, when the webhook is triggered with a message
         -Getting the username of the person who posted the message if a command is recognized
     """
+    print url
     request = urllib2.Request(url,
                             headers={"Accept" : "application/json",
                                      "Content-Type":"application/json"})
     request.add_header("Authorization", "Bearer "+bearer)
     contents = urllib2.urlopen(request).read()
+    print contents
     return contents
-    
+def Webhook4EveryRoom(url):
+    """
+    This method is used for:
+        -retrieving message text, when the webhook is triggered with a message
+        -Getting the username of the person who posted the message if a command is recognized
+    """
+    print url
+    request = urllib2.Request(url,
+                            headers={"Accept" : "application/json",
+                                     "Content-Type":"application/json"})
+    request.add_header("Authorization", "Bearer "+bearer)
+    contents = urllib2.urlopen(request).read()
+    print contents
+    return contents  
 def sendSparkPOST(url, data):
     """
     This method is used for:
@@ -183,6 +198,7 @@ def index(request):
 
     print "COUNT: " + str(got_count)
     webhook = json.loads(request.body)
+    print "SOMETHING"
     result = sendSparkGET('https://api.ciscospark.com/v1/messages/{0}'.format(webhook['data']['id']))
     result = json.loads(result)
     print result
@@ -201,7 +217,7 @@ def index(request):
                 fin.write("1")
                 fin.close()
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})
-        if (int(num_prescription_flag) == 1 and int(got_count) == 0) and ('exit' or 'reset' not in in_message):
+        if (int(num_prescription_flag) == 1 and int(got_count) == 0):
             print "HERE"
             prescription_count = int(in_message)
             with open('.precription_count','w') as f:
@@ -216,6 +232,7 @@ def index(request):
             print "WOWOEY"
             name_of_drug = in_message.lower()
             url = 'https://clin-table-search.lhc.nlm.nih.gov/api/rxterms/v3/search?terms=' + name_of_drug + '&ef=STRENGTHS_AND_FORMS,RXCUIS'
+            print url
             json_output = send_request(url)
             print json_output
             variations = get_variation(json_output) 

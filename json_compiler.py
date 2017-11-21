@@ -48,7 +48,7 @@ def form_list_of_variations(json):
         for rxcui in item:
             RxCui.append(rxcui)
         x += 1
-
+  
     summation = []
     x = 0
     print RxCui
@@ -59,9 +59,12 @@ def form_list_of_variations(json):
             strengths = len(strengthvar)
     print "FORMS: " + str(strengths) 
     for item in variations:
+        print "X IS " + str(x)
+        print item
+        print "LOOKING AT: " + str(json[2]['RXCUIS'][x])
         if(len(json[2]['RXCUIS'][x]) > 1):
             summation.append(str(variations[x]) + str((iterate_list(RxCui,x,x+len(json[2]['RXCUIS'][x])))) + str(iterate_list(json[2]['STRENGTHS_AND_FORMS'][x],0,len(json[2]['STRENGTHS_AND_FORMS'][x]))).replace(',,',','))
-            x += len(json[2]['STRENGTHS_AND_FORMS'][x])
+            x += 1 
         else:
             summation.append(str(variations[x]) + ',' + str(RxCui[x]).strip('[u\']') + ',0')
             x += 1
